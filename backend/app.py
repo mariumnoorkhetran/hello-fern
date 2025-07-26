@@ -1,11 +1,14 @@
-from fastapi import FastAPI
+# backend/app.py
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Replace with frontend URL later
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -15,6 +18,9 @@ app.add_middleware(
 def get_message():
     return {"message": "You’re doing your best 🌱"}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app:app", host="0.0.0.0", port=8000)
+class NameRequest(BaseModel):
+    name: str
+
+@app.post("/api/greet")
+def greet_user(data: NameRequest):
+    return {"message": f"Hi {data.name}, you're doing your best 🌿"}
