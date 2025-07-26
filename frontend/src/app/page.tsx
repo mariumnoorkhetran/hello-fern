@@ -1,23 +1,46 @@
-// frontend/src/app/page.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export default function Home() {
-  const [message, setMessage] = useState('...loading')
+  const [name, setName] = useState('')
+  const [response, setResponse] = useState('')
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/message`)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch(() => setMessage('Failed to fetch message 😢'))
-  }, [])
+    try {
+      const res = await fetch('https://hello-fern-backend-production.up.railway.app/api/greet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      })
+
+      const data = await res.json()
+      setResponse(data.message)
+    } catch (err) {
+      setResponse('Something went wrong 😢')
+    }
+  }
 
   return (
     <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>🌱 Hello from Hello-Fern</h1>
-      <p style={{ fontSize: '1.5rem', marginTop: '1rem' }}>{message}</p>
+
+      <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+          style={{ padding: '0.5rem', marginRight: '0.5rem' }}
+        />
+        <button type="submit" style={{ padding: '0.5rem' }}>
+          Send
+        </button>
+      </form>
+
+      <p style={{ fontSize: '1.2rem' }}>{response}</p>
     </main>
   )
 }
