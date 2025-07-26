@@ -7,7 +7,7 @@ export default function Home() {
   const [message, setMessage] = useState('...loading')
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/message')
+    fetch('https://hello-fern-backend-production.up.railway.app/api/message')
       .then((res) => res.json())
       .then((data) => setMessage(data.message))
       .catch(() => setMessage('Failed to fetch message 😢'))
